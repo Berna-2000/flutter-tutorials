@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "956215956375",
+    "project_id": "tutorial-chatapp-b9b02",
+    "storage_bucket": "tutorial-chatapp-b9b02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956215956375:android:6940f954854f6e20516ad2",
+        "android_client_info": {
+          "package_name": "com.ferolin.tutorials_app_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956215956375-u8ckancfac5mv8ifqgqnuuu47oh1gb5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUUfHX47-DRKcMo9F6toHc8jgGuFfSaKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956215956375-u8ckancfac5mv8ifqgqnuuu47oh1gb5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

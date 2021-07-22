@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:tutorials_app_1/home.dart';
-import 'package:tutorials_app_1/views/signin.dart';
+import 'package:tutorials_app_1/views/authenticate/authenticate.dart';
+import 'package:tutorials_app_1/views/verify.dart';
+import 'common/packages.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -10,21 +12,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Vin's App",
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: Signin()
+    return LayoutBuilder(
+      builder: (context, constraints){
+        return OrientationBuilder(
+          builder: (context, orientation){
+            SizeConfig().init(constraints, orientation);
+            return MaterialApp(
+              title: "Chat Application",
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              debugShowCheckedModeBanner: false,
+              home: Authenticate()
+            );
+          }
+        );
+      }
     );
   }
 }

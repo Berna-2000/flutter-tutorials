@@ -1,10 +1,12 @@
-import'package:flutter/material.dart';
-import '../partials/sizeconfig.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:tutorials_app_1/views/forgotPassword.dart';
+import 'package:tutorials_app_1/wrapper.dart';
+import '../common/packages.dart';
+import '../services/backend_auth.dart';
 
 
 class Signin extends StatefulWidget {
-  const Signin({ Key? key }) : super(key: key);
+  final Function? toggleView;
+  Signin({ this.toggleView });
 
   @override
   _SigninState createState() => _SigninState();
@@ -15,6 +17,9 @@ class _SigninState extends State<Signin> {
   String? emailAddress, password;
   IconData passwordIcon = Icons.remove_red_eye_sharp;
   bool isHidden = true;
+  final logoSize = 150 * SizeConfig.imageSizeMultiplier;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   Widget _buildLogoContainer(context){
     return Container(
@@ -22,12 +27,9 @@ class _SigninState extends State<Signin> {
       width: MediaQuery.of(context).size.width,
       color: Colors.blue[800],
       child: Center(
-        child: Text(
-          "LOGO",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 50,
-          )
+        child: Image(
+          image: AssetImage('assets/images/logo.png'),
+          height:logoSize,
         )
       )
     );
@@ -44,6 +46,9 @@ class _SigninState extends State<Signin> {
                 ? null
                 : "Invalid E-mail Address",
           onSaved: (input){
+            emailAddress = input.toString();
+          },
+          onChanged: (input){
             emailAddress = input.toString();
           },
           decoration: InputDecoration(
@@ -83,13 +88,16 @@ class _SigninState extends State<Signin> {
           keyboardType: TextInputType.text,
           obscureText: isHidden,
           validator: (input){
-            if(input.toString().length < 1 ){
+            if(input!.length < 1 ){
               return "This field is required";
             }else{
               return null;
             }
           },
           onSaved: (input){
+            password = input.toString();
+          },
+          onChanged: (input){
             password = input.toString();
           },
           decoration: InputDecoration(
@@ -148,6 +156,8 @@ class _SigninState extends State<Signin> {
         ),
         onPressed: (){
           //some code here
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> 
+            ForgotPasswordPage()));
         },
       )
     );
@@ -168,12 +178,165 @@ class _SigninState extends State<Signin> {
           primary: Colors.green[200],
           padding: EdgeInsets.symmetric(horizontal: 175, vertical: 5),
         ),
-        onPressed: (){
+        onPressed: () async{
           //some code here
+          if(_formKey.currentState?.validate()==true){
+            _formKey.currentState?.save();
+            final AuthenticationMethods authMethods = AuthenticationMethods();
+            dynamic result = await authMethods.signinWithEmailandPassword(emailAddress.toString(), password.toString());
+            
+            // if(result == null){
+            //   showDialog(
+            //     context: context,
+            //     barrierDismissible: false,
+            //     builder: (BuildContext context) {
+            //       return AlertDialog(
+            //         title: Text(
+            //           "Error",
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w600,
+            //             fontFamily: "Montserrat"
+            //           )
+            //         ),
+            //         content: Text(
+            //           "No account exists for the given e-mail address. Check your inputs.",
+            //           style: TextStyle(
+            //             fontSize: 2 * SizeConfig.textMultiplier,
+            //             fontFamily: "Montserrat"
+            //           )
+            //         ),
+            //         actions: [
+            //           TextButton(
+            //             child: Text(
+            //               'OKAY',
+            //               style: TextStyle(
+            //                 color: Colors.red,
+            //                 fontFamily: "Montserrat"
+            //               )
+            //             ),
+            //             onPressed: () {
+            //               // if(error == "verified"){
+            //               //   // final user = authMethods.getCurrentUser();
+            //               //   //sends another verification email
+            //               //   Navigator.of(context)
+            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper(status: isVerified)));
+            //               //   authMethods.verifyEmail();
+            //               // }else if (error == "connected"){
+            //               //   Navigator.of(context)
+            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=>MainPage()));
+            //               // }
+            //               Navigator.of(context).pop();
+            //             },
+            //           )
+            //         ]
+            //       );
+            //     }
+            //   );
+            // }else{
+            //   Navigator.of(context)
+            //           .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper()));
+            // }
+          }else{
+            
+          }
+          // if(_formKey.currentState?.validate() == true){
+            // print("BOO");
+            // _formKey.currentState!.save();
+            // print("WOW");
+            // final AuthenticationMethods authMethods = AuthenticationMethods();
+            // dynamic result = await authMethods.signinWithEmailandPassword(emailAddress.toString(), password.toString());
+            // print(result);
+            // if(result == null){
+            //   showDialog(
+            //     context: context,
+            //     barrierDismissible: false,
+            //     builder: (BuildContext context) {
+            //       return AlertDialog(
+            //         title: Text(
+            //           "Error",
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w600,
+            //             fontFamily: "Montserrat"
+            //           )
+            //         ),
+            //         content: Text(
+            //           "No account exists for the given e-mail address. Check your inputs.",
+            //           style: TextStyle(
+            //             fontSize: 2 * SizeConfig.textMultiplier,
+            //             fontFamily: "Montserrat"
+            //           )
+            //         ),
+            //         actions: [
+            //           TextButton(
+            //             child: Text(
+            //               'OKAY',
+            //               style: TextStyle(
+            //                 color: Colors.red,
+            //                 fontFamily: "Montserrat"
+            //               )
+            //             ),
+            //             onPressed: () {
+            //               // if(error == "verified"){
+            //               //   // final user = authMethods.getCurrentUser();
+            //               //   //sends another verification email
+            //               //   Navigator.of(context)
+            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper(status: isVerified)));
+            //               //   authMethods.verifyEmail();
+            //               // }else if (error == "connected"){
+            //               //   Navigator.of(context)
+            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=>MainPage()));
+            //               // }
+            //               Navigator.of(context).pop();
+            //             },
+            //           )
+            //         ]
+            //       );
+            //     }
+            //   );
+            // }else{
+            //   Navigator.of(context)
+            //           .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper()));
+            // }
+          // }else{
+          //   print("BUANG");
+          // }
         }
       )
     );
   }
+
+  Widget _buildSignupRow(){
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 15.0),
+      alignment: Alignment.center,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Don't have an account? ",
+            style: TextStyle(
+              fontFamily: "Montserrat",
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              //some code to go to the registration page
+              widget.toggleView!();
+            },
+            child: Text(
+              "Sign up",
+              style: TextStyle(
+                fontFamily: "Montserrat",
+                color: Colors.cyan,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+          )
+        ],
+      )
+    );
+  }
+
   
   @override
   Widget build(BuildContext context) {
@@ -184,18 +347,21 @@ class _SigninState extends State<Signin> {
             children: [
               _buildLogoContainer(context),
               Container(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      _buildEmailForm(),//email
-                      _buildPasswordForm(),//password
-                      _buildForgotPassword(),//Forgot Password
-                      _buildLoginButton(),//Login
-                      //Create an account
-                      //Socials
-                    ],
-                  )
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        _buildEmailForm(),//email
+                        _buildPasswordForm(),//password
+                        _buildForgotPassword(),//Forgot Password
+                        _buildLoginButton(),//Login
+                        _buildSignupRow()//Create an account
+                        //Socials
+                      ],
+                    )
+                  ),
                 )
               )
             ],
