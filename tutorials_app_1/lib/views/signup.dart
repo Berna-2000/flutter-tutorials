@@ -1,5 +1,9 @@
+import 'package:tutorials_app_1/controller/userController.dart';
+import 'package:tutorials_app_1/services/backend_auth.dart';
+import 'verify.dart';
 import '../common/packages.dart';
 import '../partials/sizeconfig.dart';
+import '../wrapper.dart';
 
 class SignupPage extends StatefulWidget {
   final Function? toggleView;
@@ -255,6 +259,134 @@ class _SignupPageState extends State<SignupPage> {
         ),
         onPressed: () async{
           //some code here
+          String uid;
+          String photo = "https://img.lovepik.com/element/45001/6381.png_860.png";
+          AuthenticationMethods authMethods = new AuthenticationMethods();
+          if(_formKey.currentState?.validate() == true){
+            _formKey.currentState?.save();
+            try{
+              dynamic result = await authMethods.signupWithEmailAndPassword(emailAddress.toString(), password.toString());
+              if(result == null){
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Error",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      content: Text(
+                        "This e-mail address is already in use. Try another one.",
+                        style: TextStyle(
+                          fontSize: 2 * SizeConfig.textMultiplier,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text(
+                            'OKAY',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: "Montserrat"
+                            )
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ]
+                    );
+                  }
+                );
+              }else{
+                uid = "${result.uid}";
+                await authMethods.updateProfile(username.toString(), photo);
+                UserController().createUser(uid, emailAddress.toString(), username.toString());
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        'Success',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      content: Text(
+                        "Sign up successful. Verification email sent.",
+                        style: TextStyle(
+                          fontSize: 2 * SizeConfig.textMultiplier,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text(
+                            'OKAY',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: "Montserrat"
+                            )
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(builder: (context)=>VerifyPage()));
+                          },
+                        )
+                      ]
+                    );
+                  }
+                );
+              }
+            }catch(e){
+              print(e.toString());
+            }
+          }else{
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    "Error",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "Montserrat"
+                    )
+                  ),
+                  content: Text(
+                    "Missing Fields.",
+                    style: TextStyle(
+                      fontSize: 2 * SizeConfig.textMultiplier,
+                      fontFamily: "Montserrat"
+                    )
+                  ),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        'OKAY',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ]
+                );
+              }
+            );
+          }
         }
       )
     );
@@ -316,20 +448,23 @@ class _SignupPageState extends State<SignupPage> {
             children: [
               _buildLogoContainer(context),
               Container(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      _buildUsernameRow(),
-                      _buildEmailRow(),//email
-                      _buildPasswordRow(),//password
-                      _buildConfirmPasswordRow(),
-                      _buildSignupRow(context),
-                      _buildSigninRow(),//Login
-                      //Create an account
-                      //Socials
-                    ],
-                  )
+                child: Form(
+                  key: _formKey,
+                  child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        _buildUsernameRow(),
+                        _buildEmailRow(),//email
+                        _buildPasswordRow(),//password
+                        _buildConfirmPasswordRow(),
+                        _buildSignupRow(context),
+                        _buildSigninRow(),//Login
+                        //Create an account
+                        //Socials
+                      ],
+                    )
+                  ),
                 )
               )
             ],

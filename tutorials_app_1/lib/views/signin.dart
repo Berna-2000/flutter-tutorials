@@ -166,10 +166,6 @@ class _SigninState extends State<Signin> {
   Widget _buildLoginButton(){
     return Container(
       child: ElevatedButton(
-        // color: Color(0xfff1976d2), 
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(30.0),
-        // ),
         child: Text(
           "LOGIN",
           style: TextStyle(color: Colors.black),
@@ -184,122 +180,127 @@ class _SigninState extends State<Signin> {
             _formKey.currentState?.save();
             final AuthenticationMethods authMethods = AuthenticationMethods();
             dynamic result = await authMethods.signinWithEmailandPassword(emailAddress.toString(), password.toString());
-            
-            // if(result == null){
-            //   showDialog(
-            //     context: context,
-            //     barrierDismissible: false,
-            //     builder: (BuildContext context) {
-            //       return AlertDialog(
-            //         title: Text(
-            //           "Error",
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.w600,
-            //             fontFamily: "Montserrat"
-            //           )
-            //         ),
-            //         content: Text(
-            //           "No account exists for the given e-mail address. Check your inputs.",
-            //           style: TextStyle(
-            //             fontSize: 2 * SizeConfig.textMultiplier,
-            //             fontFamily: "Montserrat"
-            //           )
-            //         ),
-            //         actions: [
-            //           TextButton(
-            //             child: Text(
-            //               'OKAY',
-            //               style: TextStyle(
-            //                 color: Colors.red,
-            //                 fontFamily: "Montserrat"
-            //               )
-            //             ),
-            //             onPressed: () {
-            //               // if(error == "verified"){
-            //               //   // final user = authMethods.getCurrentUser();
-            //               //   //sends another verification email
-            //               //   Navigator.of(context)
-            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper(status: isVerified)));
-            //               //   authMethods.verifyEmail();
-            //               // }else if (error == "connected"){
-            //               //   Navigator.of(context)
-            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=>MainPage()));
-            //               // }
-            //               Navigator.of(context).pop();
-            //             },
-            //           )
-            //         ]
-            //       );
-            //     }
-            //   );
-            // }else{
-            //   Navigator.of(context)
-            //           .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper()));
-            // }
+            if(result == null){
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text(
+                      "Error",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Montserrat"
+                      )
+                    ),
+                    content: Text(
+                      "No account exists for the given e-mail address. Check your inputs.",
+                      style: TextStyle(
+                        fontSize: 2 * SizeConfig.textMultiplier,
+                        fontFamily: "Montserrat"
+                      )
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text(
+                          'OKAY',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontFamily: "Montserrat"
+                          )
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      )
+                    ]
+                  );
+                }
+              );
+            }else{
+              //Check if the email address provided is verified or not
+              dynamic isVerified = await authMethods.checkVerfiedEmail();
+              if(isVerified == false){
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        "Error",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      content: Text(
+                        "Email not verified. Sent another verification email.",
+                        style: TextStyle(
+                          fontSize: 2 * SizeConfig.textMultiplier,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text(
+                            'OKAY',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: "Montserrat"
+                            )
+                          ),
+                          onPressed: () async{
+                            await authMethods.verifyEmail();
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ]
+                    );
+                  }
+                );
+              }else{
+                Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper(status: isVerified)));
+              }
+            }
           }else{
-            
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    "Error",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "Montserrat"
+                    )
+                  ),
+                  content: Text(
+                    "Missing Fields.",
+                    style: TextStyle(
+                      fontSize: 2 * SizeConfig.textMultiplier,
+                      fontFamily: "Montserrat"
+                    )
+                  ),
+                  actions: [
+                    TextButton(
+                      child: Text(
+                        'OKAY',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ]
+                );
+              }
+            );
           }
-          // if(_formKey.currentState?.validate() == true){
-            // print("BOO");
-            // _formKey.currentState!.save();
-            // print("WOW");
-            // final AuthenticationMethods authMethods = AuthenticationMethods();
-            // dynamic result = await authMethods.signinWithEmailandPassword(emailAddress.toString(), password.toString());
-            // print(result);
-            // if(result == null){
-            //   showDialog(
-            //     context: context,
-            //     barrierDismissible: false,
-            //     builder: (BuildContext context) {
-            //       return AlertDialog(
-            //         title: Text(
-            //           "Error",
-            //           style: TextStyle(
-            //             fontWeight: FontWeight.w600,
-            //             fontFamily: "Montserrat"
-            //           )
-            //         ),
-            //         content: Text(
-            //           "No account exists for the given e-mail address. Check your inputs.",
-            //           style: TextStyle(
-            //             fontSize: 2 * SizeConfig.textMultiplier,
-            //             fontFamily: "Montserrat"
-            //           )
-            //         ),
-            //         actions: [
-            //           TextButton(
-            //             child: Text(
-            //               'OKAY',
-            //               style: TextStyle(
-            //                 color: Colors.red,
-            //                 fontFamily: "Montserrat"
-            //               )
-            //             ),
-            //             onPressed: () {
-            //               // if(error == "verified"){
-            //               //   // final user = authMethods.getCurrentUser();
-            //               //   //sends another verification email
-            //               //   Navigator.of(context)
-            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper(status: isVerified)));
-            //               //   authMethods.verifyEmail();
-            //               // }else if (error == "connected"){
-            //               //   Navigator.of(context)
-            //               //         .pushReplacement(MaterialPageRoute(builder: (context)=>MainPage()));
-            //               // }
-            //               Navigator.of(context).pop();
-            //             },
-            //           )
-            //         ]
-            //       );
-            //     }
-            //   );
-            // }else{
-            //   Navigator.of(context)
-            //           .pushReplacement(MaterialPageRoute(builder: (context)=> Wrapper()));
-            // }
-          // }else{
-          //   print("BUANG");
-          // }
         }
       )
     );

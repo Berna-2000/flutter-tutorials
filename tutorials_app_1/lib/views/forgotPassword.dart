@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tutorials_app_1/views/authenticate/authenticate.dart';
+import '../services/backend_auth.dart';
 import '../common/packages.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -20,6 +22,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             : "Invalid E-mail Address",
         onSaved: (input) => emailAddress = input.toString(),
         onChanged: (value){
+          emailAddress = value;
           setState(() {
             emailAddress = value;
           });
@@ -61,6 +64,54 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: ElevatedButton(
             onPressed: () async {
               //sends the reset password email
+              // Pop up notify that an email has already been sent to your email address
+              //Send reset password email to your email address
+              AuthenticationMethods authMethods = new AuthenticationMethods();
+              if(_formKey.currentState?.validate()==true){
+                _formKey.currentState?.save();
+                print(emailAddress);
+                await authMethods.resetPassword(emailAddress);
+                setState(() {
+                  isLoading = true;
+                });
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text(
+                        'Success',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      content: Text(
+                        "An email has been sent to " +emailAddress,
+                        style: TextStyle(
+                          fontSize: 2 * SizeConfig.textMultiplier,
+                          fontFamily: "Montserrat"
+                        )
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text(
+                            'OKAY',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontFamily: "Montserrat"
+                            )
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Authenticate()));
+                          },
+                        )
+                      ]
+                    );
+                  }
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               primary: Color(0xfff1976d2),

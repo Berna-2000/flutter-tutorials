@@ -12,9 +12,37 @@ class _NoResultsPageState extends State<NoResultsPage> {
 
   @override
   void initState() {
-    // Timer(Duration(seconds: 1), (){
-    //   showNoResultError(context);
-    // });
+    Timer(Duration(seconds: 1), (){
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Text(
+                "User not found.",
+                style: TextStyle(
+                  fontSize: 2 * SizeConfig.textMultiplier,
+                  fontFamily: "Montserrat"
+                )
+              ),
+              actions: [
+                TextButton(
+                  child: Text(
+                    'OKAY',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontFamily: "Montserrat"
+                    )
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ]
+            );
+          }
+        );
+    });
     super.initState();
   }
 
