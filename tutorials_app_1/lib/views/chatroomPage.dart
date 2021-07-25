@@ -1,7 +1,3 @@
-
-// import 'package:chatapp_ferolin/models/chatroom.dart';
-// import 'package:chatapp_ferolin/partials/sizeconfig.dart';
-// import 'package:chatapp_ferolin/views/emptyConversation.dart';
 import 'package:flutter/material.dart';
 import 'package:tutorials_app_1/views/emptyConversation.dart';
 import '../common/packages.dart';
@@ -125,7 +121,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 ),
               ),
               onTap: () {
-                //some code here
                 //create chatRoom
                 if(message.isNotEmpty){
                   var messageSent = DateTime.now();
@@ -166,7 +161,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     hasNoConversation = false;
                     messageHolder.clear();
                     isFirstTime = false;
-                    // FocusScope.of(context).unfocus();
                   });
                   messageId = "";
                 }
